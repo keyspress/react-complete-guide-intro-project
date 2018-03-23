@@ -1,6 +1,8 @@
 import React, { Component } from 'react';
+import Radium, { StyleRoot } from 'radium';
 import './App.css';
 import Person from './Person/Person';
+
 
 class App extends Component {
   state = {
@@ -12,31 +14,31 @@ class App extends Component {
     showPersons: false
   }
 
-nameChangedHandler = (event, id ) => {
-    const personIndex = this.state.persons.findIndex(p => {
-      return p.id === id;
-    });
+  nameChangedHandler = (event, id ) => {
+      const personIndex = this.state.persons.findIndex(p => {
+        return p.id === id;
+      });
 
-    const person = {
-      ...this.state.persons[personIndex]
-    };
+      const person = {
+        ...this.state.persons[personIndex]
+      };
 
-    // const person = Object.assign({}, this.state.persons[personIndex]);
+      // const person = Object.assign({}, this.state.persons[personIndex]);
 
-    person.name = event.target.value;
+      person.name = event.target.value;
 
+      const persons = [...this.state.persons];
+      persons[personIndex] = person;
+
+      this.setState({ persons: persons })
+    }
+
+  deletePersonHandler = (personIndex) => {
+    // const persons = this.state.persons.slice();
     const persons = [...this.state.persons];
-    persons[personIndex] = person;
-
-    this.setState({ persons: persons })
+    persons.splice(personIndex, 1);
+    this.setState({persons: persons});
   }
-
-deletePersonHandler = (personIndex) => {
-  // const persons = this.state.persons.slice();
-  const persons = [...this.state.persons];
-  persons.splice(personIndex, 1);
-  this.setState({persons: persons});
-}
 
   togglePersonsHandler = () => {
     const doesShow = this.state.showPersons;
@@ -50,7 +52,11 @@ deletePersonHandler = (personIndex) => {
       font: 'inherit',
       border: '1px solid blue',
       padding: '8px',
-      cursor: 'pointer'
+      cursor: 'pointer',
+      ':hover': {
+        backgroundColor: 'lightgreen',
+        color: 'black'
+      }
     };
 
     let persons = null;
@@ -71,6 +77,10 @@ deletePersonHandler = (personIndex) => {
       );
 
       style.backgroundColor = 'red';
+      style[':hover'] = {
+        backgroundColor: 'salmon',
+        color: 'black'
+      }
     }
 
     const classes = [];
@@ -82,17 +92,19 @@ deletePersonHandler = (personIndex) => {
     }
 
     return (
-      <div className="App">
-        <h1>Hi, I'm a React App</h1>
-        <p className={classes.join(' ')}>It's working</p>
-        <button
-          style={style}
-          onClick={this.togglePersonsHandler}>Toggle Persons</button>
-        {persons}
-      </div>
+      <StyleRoot>
+        <div className="App">
+          <h1>Hi, I'm a React App</h1>
+          <p className={classes.join(' ')}>It's working</p>
+          <button
+            style={style}
+            onClick={this.togglePersonsHandler}>Toggle Persons</button>
+          {persons}
+        </div>
+      </StyleRoot>
     );
     // return React.createElement('div', {className: 'App'}, React.createElement('h1', ))
   }
 }
 
-export default App;
+export default Radium(App);
